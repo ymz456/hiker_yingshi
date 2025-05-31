@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250530',
+    version: '20250531',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -283,6 +283,89 @@ const csdown = {
                 }
             })
         }
+
+        function banner(title, start, arr, data, cfg) {
+            let id = title + 'lunbo';
+            var rnum = Math.floor(Math.random() * data.length);
+            var item = data[rnum];
+            putMyVar('rnum', rnum);
+            let time = 5000;
+            let col_type = 'pic_1_card';
+            let color = "white";
+            let desc = '';
+            if (cfg != undefined) {
+                time = cfg.time ? cfg.time : time;
+                col_type = cfg.col_type ? cfg.col_type : col_type;
+                desc = cfg.desc ? cfg.desc : desc;
+            }
+
+            arr.push({
+                col_type: col_type,
+                img: item.vod_pic,
+                desc: desc,
+                title: item.vod_name,
+                url: item.url,
+                extra: {
+                    id: id + 'bar',
+                    vod_id: item.vod_id,
+                    vod_name: item.vod_name,
+                }
+            })
+
+            if (start == false || getMyVar('benstart', 'true') == 'false') {
+                unRegisterTask(id)
+                return
+            }
+
+            //log(data)
+
+            let obj = {
+                data: data,
+            };
+
+            registerTask(id, time, $.toString((obj, id) => {
+                var data = obj.data;
+                var rum = getMyVar('rnum');
+
+                var i = Number(getMyVar('banneri', '0'));
+                if (rum != '') {
+                    i = Number(rum) + 1
+                    clearMyVar('rnum')
+                } else {
+                    i = i + 1;
+                }
+                //log(i)
+                //log(data.length)
+
+                if (i > data.length - 1) {
+                    i = 0
+                }
+                var item = data[i];
+                //log(item)
+                try {
+                    updateItem(id + 'bar', {
+                        title: item.vod_name,
+                        img: item.vod_pic,
+                        url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("videoerji")',
+                        extra: {
+                            //name: item.title.replace(/<[^>]+>/g, ''),
+                            //sname: item.extra.sname,
+                            //stype: item.extra.stype,
+                            //surl: item.url,
+                            //img:item.img,
+                            //title: item.title.replace(/<[^>]+>/g, ''),
+                            vod_id: item.vod_id,
+                            vod_name: item.vod_name,
+                        }
+                    })
+                } catch (e) {
+                    log(e.message)
+                    unRegisterTask(id)
+                }
+                putMyVar('banneri', i);
+
+            }, obj, id))
+        }
     }),
     video: () => {
         var d = csdown.d;
@@ -294,14 +377,18 @@ const csdown = {
                     let appurl = fetch('https://appcms.jm4k.top/appurl.txt');
                     putMyVar('host', appurl)
                 }
-                if (!storage0.getMyVar('type_list')) {
+                if (!storage0.getMyVar('init_data', '')) {
                     let init_data = post('/api.php/getappapi.index/initV119')
-                    let type_list = init_data.type_list;
-                    storage0.putMyVar('type_list', type_list)
+                    storage0.putMyVar('init_data', init_data)
                 }
+                banner(MY_RULE.title, true, d, storage0.getMyVar('init_data').banner_list, {
+                    time: 5000,
+                    col_type: 'card_pic_1',
+                    desc: '0'
+                })
                 if (!storage0.getItem('type_id_')) {
                     let type_id_ = []
-                    storage0.getMyVar('type_list').slice(1).forEach(data => {
+                    storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
                         type_id_.push({
                             list: data.type_name,
                             id: data.type_id,
@@ -310,7 +397,7 @@ const csdown = {
                     })
                     storage0.setItem('type_id_', type_id_)
                 }
-                storage0.getMyVar('type_list').forEach(data => {
+                storage0.getMyVar('init_data').type_list.forEach(data => {
                     if (data.type_name != '全部') {
                         if (!storage0.getItem('filter_type_list')) {
                             storage0.setItem('filter_type_list', data.filter_type_list)
@@ -440,7 +527,7 @@ const csdown = {
                     col_type: 'scroll_button',
                     extra: {
                         longClick: [],
-                        backgroundColor: getMyVar('info', '0') == info.show ? "#20FA7298" : "",
+                        backgroundColor: getMyVar('info', '0') == index_1 ? "#20FA7298" : "",
                     }
                 })
             })
