@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250531',
+    version: '20250531_1',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -346,7 +346,7 @@ const csdown = {
                     updateItem(id + 'bar', {
                         title: item.vod_name,
                         img: item.vod_pic,
-                        url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("videoerji")',
+                        url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
                         extra: {
                             //name: item.title.replace(/<[^>]+>/g, ''),
                             //sname: item.extra.sname,
