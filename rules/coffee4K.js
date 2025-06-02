@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250602_1',
+    version: '20250602_2',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -395,7 +395,16 @@ const csdown = {
                     let init_data = post('api.php/qijiappapi.index/initV120')
                     storage0.putMyVar('init_data', init_data)
                 }
-                banner(MY_RULE.title, true, d, storage0.getMyVar('init_data').banner_list.slice(1), {
+                if (!storage0.getMyVar('lunbo_')) {
+                    let lunbo_ = [];
+                    storage0.getMyVar('init_data').banner_list.forEach(data => {
+                        if (!/QQ.*群/.test(data.vod_name)) {
+                            lunbo_.push(data)
+                        }
+                    })
+                    storage0.putMyVar('lunbo_', lunbo_)
+                }
+                banner(MY_RULE.title, true, d, storage0.getMyVar('lunbo_'), {
                     time: 5000,
                     col_type: 'card_pic_1',
                     desc: '0'
