@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250602',
+    version: '20250602_1',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -395,7 +395,7 @@ const csdown = {
                     let init_data = post('api.php/qijiappapi.index/initV120')
                     storage0.putMyVar('init_data', init_data)
                 }
-                banner(MY_RULE.title, true, d, storage0.getMyVar('init_data').banner_list, {
+                banner(MY_RULE.title, true, d, storage0.getMyVar('init_data').banner_list.slice(1), {
                     time: 5000,
                     col_type: 'card_pic_1',
                     desc: '0'
@@ -487,9 +487,9 @@ const csdown = {
             let vod = storage0.getMyVar('vodDetail').vod;
             d.push({
                 title: vod.vod_name + '\n' + ('‘‘’’演员：' + vod.vod_actor + '\n国家：' + vod.vod_area).small(),
-                desc: '类型：' + vod.vod_class + '\n' + ('‘‘’’更新状态：' + vod.vod_remarks),
+                desc: '类型：' + vod.vod_class + '\n' + ('‘‘’’更新状态：' + vod.vod_remarks + '  ' + vod.vod_year),
                 img: vod.vod_pic,
-                url: $('hiker://empty').rule((pic, name, actor, class_, remarks, area, blurb) => {
+                url: $('hiker://empty').rule((pic, name, actor, class_, remarks, area, blurb, year) => {
                     var d = []
                     d.push({
                         img: pic,
@@ -497,6 +497,9 @@ const csdown = {
                         col_type: 'pic_1_full'
                     }, {
                         title: '影片名：' + name,
+                        col_type: 'rich_text'
+                    }, {
+                        title: '年代：' + year,
                         col_type: 'rich_text'
                     }, {
                         title: '演员：' + actor,
@@ -515,7 +518,7 @@ const csdown = {
                         col_type: 'rich_text',
                     }, )
                     setResult(d)
-                }, vod.vod_pic, vod.vod_name, vod.vod_actor, vod.vod_class, vod.vod_remarks, vod.vod_area, vod.vod_blurb),
+                }, vod.vod_pic, vod.vod_name, vod.vod_actor, vod.vod_class, vod.vod_remarks, vod.vod_area, vod.vod_blurb, vod.vod_year),
                 col_type: 'movie_1_vertical_pic_blur',
             })
             setDesc(d, vod.vod_blurb)
