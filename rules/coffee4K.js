@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250602_2',
+    version: '20250602_3',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -10,7 +10,7 @@ const csdown = {
         if (getItem('up' + csdown.version, '') == '') {
             confirm({
                 title: '更新内容',
-                content: '版本号：' + csdown.version + '\n1.本小程序完全免费，别被骗了\n2.随时可能跑路',
+                content: '版本号：' + csdown.version + '\n1.本小程序完全免费，别被骗了\n2.随时可能跑路\n3.修复秒播线路播放问题',
                 confirm: $.toString((version) => {
                     setItem('up' + version, '1')
                 }, csdown.version),
@@ -567,10 +567,18 @@ const csdown = {
                         }
                         try {
                             let m3u8 = JSON.parse(fetch(parse_api_url)).url;
+                            if (m3u8.includes('nby') && m3u8.includes('mp4')) {
+                                let nby = JSON.parse(fetch(m3u8, {
+                                    headers: {},
+                                    method: 'GET',
+                                    onlyHeaders: true
+                                }))
+                                return nby.url + '#isVideo=true#';
+                            }
                             if (m3u8 == null) {
                                 return 'toast://未获取到链接'
                             }
-                            return m3u8
+                            return m3u8 + '#isVideo=true#';
                         } catch (e) {
                             log(e.message)
                             return 'toast://未获取到链接'
