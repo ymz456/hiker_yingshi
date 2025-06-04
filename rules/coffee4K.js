@@ -1,21 +1,15 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250602_3',
+    version: '20250604',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
     home: () => {
         var d = csdown.d;
-        if (getItem('up' + csdown.version, '') == '') {
-            confirm({
-                title: '更新内容',
-                content: '版本号：' + csdown.version + '\n1.本小程序完全免费，别被骗了\n2.随时可能跑路\n3.修复秒播线路播放问题',
-                confirm: $.toString((version) => {
-                    setItem('up' + version, '1')
-                }, csdown.version),
-                cancel: $.toString(() => {})
-            })
+        if (!getItem('up' + csdown.version, '')) {
+            csdown.update()
+            setItem('up' + csdown.version, '1')
         }
         if (MY_PAGE == 1) {
             d.push({   
@@ -44,7 +38,13 @@ const csdown = {
 
         if (MY_PAGE == 1) {
             eval(csdown.rely(csdown.aes));
-            Cate(首页, '首页', d, 'icon_4');
+            let longclick = [{
+                title: '更新日志',
+                js: $.toString(() => {
+                    $.require("csdown").update()
+                })
+            }]
+            Cate(首页, '首页', d, 'icon_4', longclick);
             d.push({
                 col_type: 'line',
             }, {
@@ -83,6 +83,10 @@ const csdown = {
 
         function strong(d, c) {
             return '‘‘’’<strong><font color=#' + (c || '000000') + '>' + d + '</font></strong>';
+        }
+        if (!getMyVar('host', '')) {
+            let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
+            putMyVar('host', appurl + '/')
         }
 
         function Cate(list, n, d, col, longclick) {
@@ -381,16 +385,47 @@ const csdown = {
             }, obj, id))
         }
     }),
+    update: () => {
+        if (getMyVar('github_url') == '') {
+            for (let item of storage0.getItem('githubapi')) {
+                let data = JSON.parse(fetch(item, {
+                    withStatusCode: true,
+                    timeout: 5000,
+                }));
+                if (data.statusCode == 200) {
+                    putMyVar('github_url', item + '/');
+                    break;
+                }
+            }
+        }
+        const hikerPop = $.require(getMyVar('github_url') + "https://raw.githubusercontent.com/csdown/hiker_yingshi/refs/heads/main/rules/hikerPop.js");
+        let pop = hikerPop.updateRecordsBottom([{
+            title: "声明",
+            records: [
+                "““声明””:本小程序完全免费,别被骗了",
+                "““声明””:随时可能跑路",
+            ]
+        }, {
+            title: "2025/06/04",
+            records: [
+                "““修复””:修复历史记录无法查看",
+                "““修复””:修复部分BUG",
+                "““更新””:长按首页查看更新日志",
+            ]
+        }, {
+            title: "2025/06/02",
+            records: [
+                "‘‘更新’’:去除轮播广告",
+                "‘‘修复’’:修复秒播线路播放问题"
+            ]
+        }]);
+    },
     video: () => {
         var d = csdown.d;
         eval(csdown.rely(csdown.aes));
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-                    putMyVar('host', appurl + '/')
-                }
                 if (!storage0.getMyVar('init_data', '')) {
                     let init_data = post('api.php/qijiappapi.index/initV120')
                     storage0.putMyVar('init_data', init_data)
