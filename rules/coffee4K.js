@@ -406,6 +406,11 @@ const csdown = {
                 "““声明””:随时可能跑路",
             ]
         }, {
+            title: "2025/06/05",
+            records: [
+                "““更新””:轮播有广告，直接去掉算了",
+            ]
+        },{
             title: "2025/06/04",
             records: [
                 "““修复””:修复历史记录无法查看",
@@ -430,6 +435,7 @@ const csdown = {
                     let init_data = post('api.php/qijiappapi.index/initV120')
                     storage0.putMyVar('init_data', init_data)
                 }
+                /*
                 if (!storage0.getMyVar('lunbo_')) {
                     let lunbo_ = [];
                     storage0.getMyVar('init_data').banner_list.forEach(data => {
@@ -444,6 +450,7 @@ const csdown = {
                     col_type: 'card_pic_1',
                     desc: '0'
                 })
+                */
                 if (!storage0.getItem('type_id_')) {
                     let type_id_ = []
                     storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
