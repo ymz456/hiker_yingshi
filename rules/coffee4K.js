@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250605',
+    version: '20250607',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -406,11 +406,16 @@ const csdown = {
                 "““声明””:随时可能跑路",
             ]
         }, {
+            title: "2025/06/07",
+            records: [
+                "““修复””:修复部分线路无法播放问题",
+            ]
+        }, {
             title: "2025/06/05",
             records: [
                 "““更新””:轮播有广告，直接去掉算了",
             ]
-        },{
+        }, {
             title: "2025/06/04",
             records: [
                 "““修复””:修复历史记录无法查看",
@@ -602,13 +607,20 @@ const csdown = {
             urls.forEach(data => {
                 d.push({
                     title: data.name,
-                    url: $().lazyRule((url, parse_api_url) => {
+                    url: $().lazyRule((url, parse_api_url, token, from) => {
                         eval($.require("csdown").rely($.require("csdown").aes));
-                        if (url.includes('.m3u8') || url.includes('.mkv') || url.includes('.mp4')) {
-                            return url;
+                        if (url.includes('.m3u8') || url.includes('.mp4') || url.includes('.mkv')) {
+                            return url + '#isVideo=true#';;
                         }
+                        let parse_api = parse_api_url.slice(0, 32);
+                        let body = {
+                            'parse_api': parse_api,
+                            'url': Encrypt(url),
+                            'token': token,
+                        };
                         try {
-                            let m3u8 = JSON.parse(fetch(parse_api_url)).url;
+                            let data = post('api.php/qijiappapi.index/vodParse', body).json;
+                            let m3u8 = JSON.parse(data).url;
                             if (m3u8.includes('nby') && m3u8.includes('mp4')) {
                                 let nby = JSON.parse(fetch(m3u8, {
                                     headers: {},
@@ -625,7 +637,7 @@ const csdown = {
                             log(e.message)
                             return 'toast://未获取到链接'
                         }
-                    }, data.url, data.parse_api_url),
+                    }, data.url, data.parse_api_url, data.token, data.from),
                     col_type: 'text_4',
                     extra: {
                         vod_url: data.url,
