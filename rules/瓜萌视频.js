@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250607',
+    version: '20250607_1',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -433,7 +433,7 @@ const csdown = {
                                 'lang': '全部',
                                 'class': '全部',
                             };
-                            let data = post('api.php/qijiappapi.index/typeFilterVodList', body);
+                            let data = post('api.php/getappapi.index/typeFilterVodList', body);
                             data.recommend_list.forEach(data => {
                                 d.push({
                                     title: data.vod_name,
