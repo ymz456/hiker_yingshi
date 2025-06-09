@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250607',
+    version: '20250609',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -406,6 +406,11 @@ const csdown = {
                 "““声明””:随时可能跑路",
             ]
         }, {
+            title: "2025/06/09",
+            records: [
+                "““修复””:修复TX4K线路无法播放问题",
+            ]
+        }, {
             title: "2025/06/07",
             records: [
                 "““修复””:修复部分线路无法播放问题",
@@ -611,6 +616,10 @@ const csdown = {
                         eval($.require("csdown").rely($.require("csdown").aes));
                         if (url.includes('.m3u8') || url.includes('.mp4') || url.includes('.mkv')) {
                             return url + '#isVideo=true#';;
+                        }
+                        if (from == 'qq') {
+                            let qq = JSON.parse(fetch(parse_api_url)).url;
+                            return qq + '#isVideo=true#';
                         }
                         let parse_api = parse_api_url.slice(0, 32);
                         let body = {
