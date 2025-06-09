@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250609',
+    version: '20250609_2',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -408,7 +408,7 @@ const csdown = {
         }, {
             title: "2025/06/09",
             records: [
-                "““修复””:修复TX4K线路无法播放问题",
+                "““修复””:修复官方解析线路无法播放问题",
             ]
         }, {
             title: "2025/06/07",
@@ -617,7 +617,7 @@ const csdown = {
                         if (url.includes('.m3u8') || url.includes('.mp4') || url.includes('.mkv')) {
                             return url + '#isVideo=true#';;
                         }
-                        if (from == 'qq') {
+                        if (/qq|qiyi|youku|mgtv/.test(from)) {
                             let qq = JSON.parse(fetch(parse_api_url)).url;
                             return qq + '#isVideo=true#';
                         }
