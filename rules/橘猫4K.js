@@ -1,12 +1,16 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250531_1',
+    version: '20250607',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
     home: () => {
         var d = csdown.d;
+        if (!getItem('up' + csdown.version, '')) {
+            csdown.update()
+            setItem('up' + csdown.version, '1')
+        }
         if (MY_PAGE == 1) {
             d.push({   
                 title: "搜索 ",
@@ -30,7 +34,13 @@ const csdown = {
 
         if (MY_PAGE == 1) {
             eval(csdown.rely(csdown.aes));
-            Cate(首页, '首页', d, 'icon_4');
+            let longclick = [{
+                title: '更新日志',
+                js: $.toString(() => {
+                    $.require("csdown").update()
+                })
+            }]
+            Cate(首页, '首页', d, 'icon_4', longclick);
             d.push({
                 col_type: 'line',
             }, {
@@ -69,6 +79,10 @@ const csdown = {
 
         function strong(d, c) {
             return '‘‘’’<strong><font color=#' + (c || '000000') + '>' + d + '</font></strong>';
+        }
+        if (!getMyVar('host', '')) {
+            let appurl = fetch('https://appcms.htsp4k.top/appurl.txt');
+            putMyVar('host', appurl)
         }
 
         function Cate(list, n, d, col, longclick) {
@@ -109,11 +123,11 @@ const csdown = {
             })
             return d;
         }
-
+        const de_key = '7CYQQzwchRQpHCOj';
         // 解密函数
         function Decrypt(word) {
-            const key = CryptoJS.enc.Utf8.parse("KPEkKAESYi38CQdn");
-            const iv = CryptoJS.enc.Utf8.parse("KPEkKAESYi38CQdn");
+            const key = CryptoJS.enc.Utf8.parse(de_key);
+            const iv = CryptoJS.enc.Utf8.parse(de_key);
             let encryptedHexStr = CryptoJS.enc.Base64.parse(word);
             let decrypt = CryptoJS.AES.decrypt({
                 ciphertext: encryptedHexStr
@@ -127,8 +141,8 @@ const csdown = {
         }
         // 加密函数
         function Encrypt(plaintext) {
-            const id = CryptoJS.enc.Utf8.parse("KPEkKAESYi38CQdn");
-            const iv = CryptoJS.enc.Utf8.parse("KPEkKAESYi38CQdn");
+            const id = CryptoJS.enc.Utf8.parse(de_key);
+            const iv = CryptoJS.enc.Utf8.parse(de_key);
             var encrypted = CryptoJS.AES.encrypt(plaintext, id, {
                 iv: iv,
                 mode: CryptoJS.mode.CBC,
@@ -150,13 +164,6 @@ const csdown = {
             let html1 = Decrypt(JSON.parse(html).data);
             return JSON.parse(html1);
         }
-
-        var vod = $('').lazyRule(() => {
-            eval($.require("csdown").rely($.require("csdown").aes))
-            data = post('videos/' + input).url;
-            // return cacheM3u8(data)
-            return data
-        })
 
         function pageAdd(page) {
             if (getMyVar("page")) {
@@ -307,7 +314,7 @@ const csdown = {
                 url: item.url,
                 extra: {
                     id: id + 'bar',
-                    vod_id: item.vod_id,
+                    vod_id: item.vod_link,
                     vod_name: item.vod_name,
                 }
             })
@@ -354,7 +361,7 @@ const csdown = {
                             //surl: item.url,
                             //img:item.img,
                             //title: item.title.replace(/<[^>]+>/g, ''),
-                            vod_id: item.vod_id,
+                            vod_id: item.vod_link || item.vod_id,
                             vod_name: item.vod_name,
                         }
                     })
@@ -367,16 +374,39 @@ const csdown = {
             }, obj, id))
         }
     }),
+    update: () => {
+        if (getMyVar('github_url') == '') {
+            for (let item of storage0.getItem('githubapi')) {
+                let data = JSON.parse(fetch(item, {
+                    withStatusCode: true,
+                    timeout: 5000,
+                }));
+                if (data.statusCode == 200) {
+                    putMyVar('github_url', item + '/');
+                    break;
+                }
+            }
+        }
+        const hikerPop = $.require(getMyVar('github_url') + "https://raw.githubusercontent.com/csdown/hiker_yingshi/refs/heads/main/rules/hikerPop.js");
+        let pop = hikerPop.updateRecordsBottom([{
+            title: "声明",
+            records: [
+                "““声明””:本小程序完全免费,别被骗了",
+                "““声明””:随时可能跑路",
+            ]
+        }, {
+            title: "2025/06/11",
+            records: [
+                "““修复””:换个站",
+            ]
+        }]);
+    },
     video: () => {
         var d = csdown.d;
         eval(csdown.rely(csdown.aes));
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://appcms.jm4k.top/appurl.txt');
-                    putMyVar('host', appurl)
-                }
                 if (!storage0.getMyVar('init_data', '')) {
                     let init_data = post('/api.php/getappapi.index/initV119')
                     storage0.putMyVar('init_data', init_data)
@@ -393,67 +423,63 @@ const csdown = {
                             list: data.type_name,
                             id: data.type_id,
                             name: 'type',
+                            filter_type_list: data.filter_type_list,
                         })
                     })
                     storage0.setItem('type_id_', type_id_)
                 }
-                storage0.getMyVar('init_data').type_list.forEach(data => {
-                    if (data.type_name != '全部') {
-                        if (!storage0.getItem('filter_type_list')) {
-                            storage0.setItem('filter_type_list', data.filter_type_list)
-                        }
-                        d.push({
-                            title: color(data.type_name),
-                            url: $('hiker://empty?page=fypage').rule(() => {
-                                var d = [];
-                                eval($.require("csdown").rely($.require("csdown").aes))
-                                let id = MY_PARAMS.type_id;
-                                let pg = getParam('page');
-                                let body = {
-                                    'area': '全部',
-                                    'year': '全部',
-                                    'type_id': +id,
-                                    'page': +pg,
-                                    'sort': '最新',
-                                    'lang': '全部',
-                                    'class': '全部',
-                                };
-                                let data = post('/api.php/getappapi.index/typeFilterVodList', body);
-                                data.recommend_list.forEach(data => {
-                                    d.push({
-                                        title: data.vod_name,
-                                        desc: data.vod_remarks,
-                                        img: data.vod_pic,
-                                        url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
-                                        col_type: 'movie_3',
-                                        extra: {
-                                            vod_id: data.vod_id,
-                                            vod_name: data.vod_name,
-                                        }
-                                    })
+                storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
+                    d.push({
+                        title: color(data.type_name),
+                        url: $('hiker://empty?page=fypage').rule(() => {
+                            var d = [];
+                            eval($.require("csdown").rely($.require("csdown").aes));
+                            let id = MY_PARAMS.type_id;
+                            let pg = getParam('page');
+                            let body = {
+                                'area': '全部',
+                                'year': '全部',
+                                'type_id': +id,
+                                'page': +pg,
+                                'sort': '最新',
+                                'lang': '全部',
+                                'class': '全部',
+                            };
+                            let data = post('api.php/getappapi.index/typeFilterVodList', body);
+                            data.recommend_list.forEach(data => {
+                                d.push({
+                                    title: data.vod_name,
+                                    desc: data.vod_remarks,
+                                    img: data.vod_pic,
+                                    url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
+                                    col_type: 'movie_3',
+                                    extra: {
+                                        vod_id: data.vod_id,
+                                        vod_name: data.vod_name,
+                                    }
                                 })
-                                setResult(d)
-                            }),
-                            img: 'hiker://images/icon_right5',
-                            col_type: 'text_icon',
+                            })
+                            setResult(d)
+                        }),
+                        img: 'hiker://images/icon_right5',
+                        col_type: 'text_icon',
+                        extra: {
+                            type_id: data.type_id,
+                        }
+                    })
+                    data.recommend_list.forEach(data => {
+                        d.push({
+                            title: data.vod_name,
+                            desc: data.vod_remarks,
+                            img: data.vod_pic,
+                            url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
+                            col_type: 'movie_3',
                             extra: {
-                                type_id: data.type_id,
+                                vod_id: data.vod_id,
+                                vod_name: data.vod_name,
                             }
                         })
-                        data.recommend_list.forEach(data => {
-                            d.push({
-                                title: data.vod_name,
-                                desc: data.vod_remarks,
-                                img: data.vod_pic,
-                                url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
-                                col_type: 'movie_3',
-                                extra: {
-                                    vod_id: data.vod_id,
-                                    vod_name: data.vod_name,
-                                }
-                            })
-                        })
-                    }
+                    })
                 })
             }
         } catch (e) {
@@ -463,23 +489,23 @@ const csdown = {
     videoerji: () => {
         var d = csdown.d;
         eval(csdown.rely(csdown.aes));
-        let id = MY_PARAMS.vod_id;
         addListener('onClose', $.toString(() => {
             clearMyVar('vodDetail');
             clearMyVar('info')
         }));
+        let id = MY_PARAMS.vod_id;
         setPageTitle(MY_PARAMS.vod_name);
         try {
             if (!storage0.getMyVar('vodDetail', '')) {
-                let data = post('/api.php/getappapi.index/vodDetail', 'vod_id=' + id);
+                let data = post('api.php/getappapi.index/vodDetail', 'vod_id=' + id);
                 storage0.putMyVar('vodDetail', data);
             }
             let vod = storage0.getMyVar('vodDetail').vod;
             d.push({
                 title: vod.vod_name + '\n' + ('‘‘’’演员：' + vod.vod_actor + '\n国家：' + vod.vod_area).small(),
-                desc: '类型：' + vod.vod_class + '\n' + ('‘‘’’更新状态：' + vod.vod_remarks),
+                desc: '类型：' + vod.vod_class + '\n' + ('‘‘’’更新状态：' + vod.vod_remarks + '  ' + vod.vod_year),
                 img: vod.vod_pic,
-                url: $('hiker://empty').rule((pic, name, actor, class_, remarks, area, blurb) => {
+                url: $('hiker://empty').rule((pic, name, actor, class_, remarks, area, blurb, year) => {
                     var d = []
                     d.push({
                         img: pic,
@@ -487,6 +513,9 @@ const csdown = {
                         col_type: 'pic_1_full'
                     }, {
                         title: '影片名：' + name,
+                        col_type: 'rich_text'
+                    }, {
+                        title: '年代：' + year,
                         col_type: 'rich_text'
                     }, {
                         title: '演员：' + actor,
@@ -505,7 +534,7 @@ const csdown = {
                         col_type: 'rich_text',
                     }, )
                     setResult(d)
-                }, vod.vod_pic, vod.vod_name, vod.vod_actor, vod.vod_class, vod.vod_remarks, vod.vod_area, vod.vod_blurb),
+                }, vod.vod_pic, vod.vod_name, vod.vod_actor, vod.vod_class, vod.vod_remarks, vod.vod_area, vod.vod_blurb, vod.vod_year),
                 col_type: 'movie_1_vertical_pic_blur',
             })
             setDesc(d, vod.vod_blurb)
@@ -538,8 +567,8 @@ const csdown = {
             urls.forEach(data => {
                 d.push({
                     title: data.name,
-                    url: $().lazyRule((url, parse_api_url, token) => {
-                        eval($.require("csdown").rely($.require("csdown").aes))
+                    url: $().lazyRule((url, parse_api_url, token, from) => {
+                        eval($.require("csdown").rely($.require("csdown").aes));
                         if (url.includes('.m3u8')) {
                             return url;
                         }
@@ -560,7 +589,7 @@ const csdown = {
                             log(e.message)
                             return 'toast://未获取到链接'
                         }
-                    }, data.url, data.parse_api_url, data.token),
+                    }, data.url, data.parse_api_url, data.token, data.from),
                     col_type: 'text_4',
                     extra: {
                         vod_url: data.url,
@@ -659,7 +688,7 @@ const csdown = {
                 'type_id': +getMyVar('search', '0'),
                 'page': +pg,
             }
-            let data = post('/api.php/getappapi.index/searchList', body);
+            let data = post('api.php/getappapi.index/searchList', body);
             data.search_list.forEach(data => {
                 d.push({
                     title: data.vod_name + '\n' + ('‘‘’’演员：' + data.vod_actor + '\n国家：' + data.vod_area).small(),
@@ -684,20 +713,17 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://appcms.jm4k.top/appurl.txt');
-                    putMyVar('host', appurl)
-                }
                 let cete_index_type = storage0.getItem('type_id_')[0].id;
                 putMyVar('cate_index_type', cete_index_type);
-                storage0.getItem('type_id_').forEach((data, index) => {
+                storage0.getItem('type_id_').forEach((data, index_1) => {
                     d.push({
                         title: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? strong(data.list, 'FF6699') : data.list,
-                        url: $('#noLoading#').lazyRule((id) => {
+                        url: $('#noLoading#').lazyRule((id, index_1) => {
                             putMyVar('type_list_type', id);
+                            putMyVar('type_list_index', index_1)
                             refreshPage(false);
                             return 'hiker://empty';
-                        }, data.id),
+                        }, data.id, index_1 + ''),
                         col_type: 'scroll_button',
                         extra: {
                             backgroundColor: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? "#20FA7298" : "",
@@ -707,20 +733,20 @@ const csdown = {
                 d.push({
                     col_type: 'blank_block'
                 })
-                storage0.getItem('filter_type_list').forEach((data, index) => {
+                storage0.getItem('type_id_')[+getMyVar('type_list_index', '0')].filter_type_list.forEach((data, index) => {
                     let name = data.name;
-                    putMyVar('cate_index_' + name, data.list[0])
+                    putMyVar('cate_index_' + name + getMyVar('type_list_index', '0'), data.list[0])
                     data.list.forEach(data => {
                         d.push({
-                            title: getMyVar('type_list_' + name, getMyVar('cate_index_' + name)) == data ? strong(data, 'FF6699') : data,
-                            url: $('#noLoading#').lazyRule((name, id) => {
-                                putMyVar('type_list_' + name, id);
+                            title: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? strong(data, 'FF6699') : data,
+                            url: $('#noLoading#').lazyRule((n, name, id) => {
+                                putMyVar(n, id);
                                 refreshPage(false);
                                 return 'hiker://empty';
-                            }, name, data),
+                            }, 'type_list_' + name + getMyVar('type_list_index', '0'), name, data),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: getMyVar('type_list_' + name, getMyVar('cate_index_' + name)) == data ? "#20FA7298" : "",
+                                backgroundColor: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? "#20FA7298" : "",
                             }
                         })
                     })
@@ -730,13 +756,13 @@ const csdown = {
                 })
             }
             let body = {
-                'area': getMyVar('type_list_area', getMyVar('cate_index_area')),
-                'year': getMyVar('type_list_year', getMyVar('cate_index_year')),
+                'area': getMyVar('type_list_area' + getMyVar('type_list_index', '0'), getMyVar('cate_index_area' + getMyVar('type_list_index', '0'))),
+                'year': getMyVar('type_list_year' + getMyVar('type_list_index', '0'), getMyVar('cate_index_year' + getMyVar('type_list_index', '0'))),
                 'type_id': +getMyVar('type_list_type', getMyVar('cate_index_type')),
                 'page': +pg,
-                'sort': getMyVar('type_list_sort', getMyVar('cate_index_sort')),
-                'lang': getMyVar('type_list_lang', getMyVar('cate_index_lang')),
-                'class': getMyVar('type_list_class', getMyVar('cate_index_class')),
+                'sort': getMyVar('type_list_sort' + getMyVar('type_list_index', '0'), getMyVar('cate_index_sort' + getMyVar('type_list_index', '0'))),
+                'lang': getMyVar('type_list_lang' + getMyVar('type_list_index', '0'), getMyVar('cate_index_lang' + getMyVar('type_list_index', '0'))),
+                'class': getMyVar('type_list_class' + getMyVar('type_list_index', '0'), getMyVar('cate_index_class' + getMyVar('type_list_index', '0'))),
             };
             let data = post('/api.php/getappapi.index/typeFilterVodList', body);
             data.recommend_list.forEach(data => {
@@ -762,10 +788,6 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://appcms.jm4k.top/appurl.txt');
-                    putMyVar('host', appurl)
-                }
                 let rank = [{
                     title: '日榜&周榜&月榜',
                     id: '1&2&3'
@@ -803,10 +825,6 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://appcms.jm4k.top/appurl.txt');
-                    putMyVar('host', appurl)
-                }
                 let week = [{
                     title: '周一&周二&周三&周四&周五&周六&周日',
                     id: '1&2&3&4&5&6&7'
