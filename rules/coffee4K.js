@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250613',
+    version: '20250614',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -406,6 +406,11 @@ const csdown = {
                 "““声明””:随时可能跑路",
             ]
         }, {
+            title: "2025/06/14",
+            records: [
+                "““更新””:去广告",
+            ]
+        }, {
             title: "2025/06/13",
             records: [
                 "““修复””:修bug",
@@ -479,57 +484,59 @@ const csdown = {
                     storage0.setItem('type_id_', type_id_)
                 }
                 storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
-                    d.push({
-                        title: color(data.type_name),
-                        url: $('hiker://empty?page=fypage').rule(() => {
-                            var d = [];
-                            eval($.require("csdown").rely($.require("csdown").aes));
-                            let id = MY_PARAMS.type_id;
-                            let pg = getParam('page');
-                            let body = {
-                                'area': '全部',
-                                'year': '全部',
-                                'type_id': +id,
-                                'page': +pg,
-                                'sort': '最新',
-                                'lang': '全部',
-                                'class': '全部',
-                            };
-                            let data = post('api.php/qijiappapi.index/typeFilterVodList', body);
-                            data.recommend_list.forEach(data => {
-                                d.push({
-                                    title: data.vod_name,
-                                    desc: data.vod_remarks,
-                                    img: data.vod_pic,
-                                    url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
-                                    col_type: 'movie_3',
-                                    extra: {
-                                        vod_id: data.vod_id,
-                                        vod_name: data.vod_name,
-                                    }
-                                })
-                            })
-                            setResult(d)
-                        }),
-                        img: 'hiker://images/icon_right5',
-                        col_type: 'text_icon',
-                        extra: {
-                            type_id: data.type_id,
-                        }
-                    })
-                    data.recommend_list.forEach(data => {
+                    if (data.recommend_list.toString() != []) {
                         d.push({
-                            title: data.vod_name,
-                            desc: data.vod_remarks,
-                            img: data.vod_pic,
-                            url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
-                            col_type: 'movie_3',
+                            title: color(data.type_name),
+                            url: $('hiker://empty?page=fypage').rule(() => {
+                                var d = [];
+                                eval($.require("csdown").rely($.require("csdown").aes));
+                                let id = MY_PARAMS.type_id;
+                                let pg = getParam('page');
+                                let body = {
+                                    'area': '全部',
+                                    'year': '全部',
+                                    'type_id': +id,
+                                    'page': +pg,
+                                    'sort': '最新',
+                                    'lang': '全部',
+                                    'class': '全部',
+                                };
+                                let data = post('api.php/qijiappapi.index/typeFilterVodList', body);
+                                data.recommend_list.forEach(data => {
+                                    d.push({
+                                        title: data.vod_name,
+                                        desc: data.vod_remarks,
+                                        img: data.vod_pic,
+                                        url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
+                                        col_type: 'movie_3',
+                                        extra: {
+                                            vod_id: data.vod_id,
+                                            vod_name: data.vod_name,
+                                        }
+                                    })
+                                })
+                                setResult(d)
+                            }),
+                            img: 'hiker://images/icon_right5',
+                            col_type: 'text_icon',
                             extra: {
-                                vod_id: data.vod_id,
-                                vod_name: data.vod_name,
+                                type_id: data.type_id,
                             }
                         })
-                    })
+                        data.recommend_list.forEach(data => {
+                            d.push({
+                                title: data.vod_name,
+                                desc: data.vod_remarks,
+                                img: data.vod_pic,
+                                url: 'hiker://empty?#immersiveTheme#@rule=js:$.require("csdown").videoerji()',
+                                col_type: 'movie_3',
+                                extra: {
+                                    vod_id: data.vod_id,
+                                    vod_name: data.vod_name,
+                                }
+                            })
+                        })
+                    }
                 })
             }
         } catch (e) {
