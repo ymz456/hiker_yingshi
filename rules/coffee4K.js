@@ -409,6 +409,7 @@ const csdown = {
             title: "2025/06/14",
             records: [
                 "““更新””:去广告",
+                "““更新””:分类加个折叠",
             ]
         }, {
             title: "2025/06/13",
@@ -782,10 +783,15 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-                    putMyVar('host', appurl + '/')
-                }
+                d.push({
+                    title: getMyVar('flod_', '0') == '1' ? '““””<b>' + '∨'.fontcolor("#FF0000") + '</b>' : '““””<b>' + '∧'.fontcolor("#1aad19") + '</b>',
+                    url: $('#noLoading#').lazyRule((fold) => {
+                        putMyVar('flod_', fold === '1' ? '0' : '1');
+                        refreshPage(false);
+                        return "hiker://empty"
+                    }, getMyVar('flod_', '0')),
+                    col_type: 'scroll_button',
+                })
                 let cete_index_type = storage0.getItem('type_id_')[0].id;
                 putMyVar('cate_index_type', cete_index_type);
                 storage0.getItem('type_id_').forEach((data, index_1) => {
@@ -810,18 +816,20 @@ const csdown = {
                     let name = data.name;
                     putMyVar('cate_index_' + name + getMyVar('type_list_index', '0'), data.list[0])
                     data.list.forEach(data => {
-                        d.push({
-                            title: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? strong(data, 'FF6699') : data,
-                            url: $('#noLoading#').lazyRule((n, name, id) => {
-                                putMyVar(n, id);
-                                refreshPage(false);
-                                return 'hiker://empty';
-                            }, 'type_list_' + name + getMyVar('type_list_index', '0'), name, data),
-                            col_type: 'scroll_button',
-                            extra: {
-                                backgroundColor: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? "#20FA7298" : "",
-                            }
-                        })
+                        if (getMyVar('flod_', '0') == '1') {
+                            d.push({
+                                title: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? strong(data, 'FF6699') : data,
+                                url: $('#noLoading#').lazyRule((n, name, id) => {
+                                    putMyVar(n, id);
+                                    refreshPage(false);
+                                    return 'hiker://empty';
+                                }, 'type_list_' + name + getMyVar('type_list_index', '0'), name, data),
+                                col_type: 'scroll_button',
+                                extra: {
+                                    backgroundColor: getMyVar('type_list_' + name + getMyVar('type_list_index', '0'), getMyVar('cate_index_' + name + getMyVar('type_list_index', '0'))) == data ? "#20FA7298" : "",
+                                }
+                            })
+                        }
                     })
                     d.push({
                         col_type: 'blank_block'
