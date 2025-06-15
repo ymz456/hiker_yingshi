@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250615_',
+    version: '20250615_1',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -474,7 +474,7 @@ const csdown = {
                 if (!storage0.getItem('type_id_')) {
                     let type_id_ = []
                     storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
-                        type_id.push({
+                        type_id_.push({
                             list: data.type_name,
                             id: data.type_id,
                             name: 'type',
