@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250615',
+    version: '20250615_',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -49,6 +49,7 @@ const csdown = {
                 col_type: 'big_blank_block',
             });
         }
+
         var 分类 = getMyVar('首页', '1');
         if (MY_RULE.author == csdown.author || MY_NAME == '嗅觉浏览器') {
             if (分类 == 1) {
@@ -164,13 +165,6 @@ const csdown = {
             let html1 = Decrypt(JSON.parse(html).data);
             return JSON.parse(html1);
         }
-
-        var vod = $('').lazyRule(() => {
-            eval($.require("csdown").rely($.require("csdown").aes));
-            data = post('videos/' + input).url;
-            // return cacheM3u8(data)
-            return data
-        })
 
         function pageAdd(page) {
             if (getMyVar("page")) {
@@ -400,12 +394,14 @@ const csdown = {
             records: [
                 "““声明””:本小程序完全免费,别被骗了",
                 "““声明””:随时可能跑路",
+                "““声明””:不要相信里面的广告，不要去加里面的群",
             ]
         }, {
             title: "2025/06/15",
             records: [
                 "““更新””:更新APP版本号至最新",
                 "““修复””:修复无法观看问题",
+                "““更新””:去除广告控件，广告防不胜防，不要信广告，不要去加群",
                 '““以后随缘修，不会更的这么勤，主要是没啥动力，更这个不如自己玩””'
             ]
         }, {
@@ -478,7 +474,7 @@ const csdown = {
                 if (!storage0.getItem('type_id_')) {
                     let type_id_ = []
                     storage0.getMyVar('init_data').type_list.slice(1).forEach(data => {
-                        type_id_.push({
+                        type_id.push({
                             list: data.type_name,
                             id: data.type_id,
                             name: 'type',
@@ -742,18 +738,20 @@ const csdown = {
                     }
                 })
                 storage0.getItem('type_id_').forEach((data, index) => {
-                    d.push({
-                        title: getMyVar('search', '0') == data.id ? strong(data.list, 'FF6699') : data.list,
-                        url: $('#noLoading#').lazyRule((id) => {
-                            putMyVar('search', id);
-                            refreshPage(false);
-                            return 'hiker://empty';
-                        }, data.id),
-                        col_type: 'scroll_button',
-                        extra: {
-                            backgroundColor: getMyVar('search', '0') == data.id ? "#20FA7298" : "",
-                        }
-                    })
+                    if (!/QQ|群/.test(data.list)) {
+                        d.push({
+                            title: getMyVar('search', '0') == data.id ? strong(data.list, 'FF6699') : data.list,
+                            url: $('#noLoading#').lazyRule((id) => {
+                                putMyVar('search', id);
+                                refreshPage(false);
+                                return 'hiker://empty';
+                            }, data.id),
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: getMyVar('search', '0') == data.id ? "#20FA7298" : "",
+                            }
+                        })
+                    }
                 })
             }
             let body = {
@@ -798,19 +796,21 @@ const csdown = {
                 let cete_index_type = storage0.getItem('type_id_')[0].id;
                 putMyVar('cate_index_type', cete_index_type);
                 storage0.getItem('type_id_').forEach((data, index_1) => {
-                    d.push({
-                        title: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? strong(data.list, 'FF6699') : data.list,
-                        url: $('#noLoading#').lazyRule((id, index_1) => {
-                            putMyVar('type_list_type', id);
-                            putMyVar('type_list_index', index_1)
-                            refreshPage(false);
-                            return 'hiker://empty';
-                        }, data.id, index_1 + ''),
-                        col_type: 'scroll_button',
-                        extra: {
-                            backgroundColor: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? "#20FA7298" : "",
-                        }
-                    })
+                    if (!/QQ|群/.test(data.list)) {
+                        d.push({
+                            title: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? strong(data.list, 'FF6699') : data.list,
+                            url: $('#noLoading#').lazyRule((id, index_1) => {
+                                putMyVar('type_list_type', id);
+                                putMyVar('type_list_index', index_1)
+                                refreshPage(false);
+                                return 'hiker://empty';
+                            }, data.id, index_1 + ''),
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: getMyVar('type_list_type', getMyVar('cate_index_type')) == data.id ? "#20FA7298" : "",
+                            }
+                        })
+                    }
                 })
                 d.push({
                     col_type: 'blank_block'
@@ -885,18 +885,20 @@ const csdown = {
                     }
                 })
                 storage0.getItem('type_id_').forEach((data, index) => {
-                    d.push({
-                        title: getMyVar('rank', '0') == data.id ? strong(data.list, 'FF6699') : data.list,
-                        url: $('#noLoading#').lazyRule((id) => {
-                            putMyVar('rank', id);
-                            refreshPage(false);
-                            return 'hiker://empty';
-                        }, data.id),
-                        col_type: 'scroll_button',
-                        extra: {
-                            backgroundColor: getMyVar('rank', '0') == data.id ? "#20FA7298" : "",
-                        }
-                    })
+                    if (!/QQ|群/.test(data.list)) {
+                        d.push({
+                            title: getMyVar('rank', '0') == data.id ? strong(data.list, 'FF6699') : data.list,
+                            url: $('#noLoading#').lazyRule((id) => {
+                                putMyVar('rank', id);
+                                refreshPage(false);
+                                return 'hiker://empty';
+                            }, data.id),
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: getMyVar('rank', '0') == data.id ? "#20FA7298" : "",
+                            }
+                        })
+                    }
                 })
             }
             if (!storage0.getMyVar('rank_' + getMyVar('rank', '0') + pg)) {
