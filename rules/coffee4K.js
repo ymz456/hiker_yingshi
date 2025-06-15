@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250614',
+    version: '20250615',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -25,10 +25,6 @@ const csdown = {
                 }
             })
         };
-        if (!getMyVar('host', '')) {
-            let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-            putMyVar('host', appurl + '/')
-        }
         var pg = getParam('page');
         let 首页 = [{
             title: '首页&分类&排行榜&排期表',
@@ -85,8 +81,8 @@ const csdown = {
             return '‘‘’’<strong><font color=#' + (c || '000000') + '>' + d + '</font></strong>';
         }
         if (!getMyVar('host', '')) {
-            let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-            putMyVar('host', appurl + '/')
+            let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/2.txt');
+            putMyVar('host', appurl)
         }
 
         function Cate(list, n, d, col, longclick) {
@@ -127,11 +123,11 @@ const csdown = {
             })
             return d;
         }
-
+        const de_key = 'qwertyuiopqwertt';
         // 解密函数
         function Decrypt(word) {
-            const key = CryptoJS.enc.Utf8.parse("qwertyuiopqwerty");
-            const iv = CryptoJS.enc.Utf8.parse("qwertyuiopqwerty");
+            const key = CryptoJS.enc.Utf8.parse(de_key);
+            const iv = CryptoJS.enc.Utf8.parse(de_key);
             let encryptedHexStr = CryptoJS.enc.Base64.parse(word);
             let decrypt = CryptoJS.AES.decrypt({
                 ciphertext: encryptedHexStr
@@ -145,8 +141,8 @@ const csdown = {
         }
         // 加密函数
         function Encrypt(plaintext) {
-            const id = CryptoJS.enc.Utf8.parse("qwertyuiopqwerty");
-            const iv = CryptoJS.enc.Utf8.parse("qwertyuiopqwerty");
+            const id = CryptoJS.enc.Utf8.parse(de_key);
+            const iv = CryptoJS.enc.Utf8.parse(de_key);
             var encrypted = CryptoJS.AES.encrypt(plaintext, id, {
                 iv: iv,
                 mode: CryptoJS.mode.CBC,
@@ -404,6 +400,13 @@ const csdown = {
             records: [
                 "““声明””:本小程序完全免费,别被骗了",
                 "““声明””:随时可能跑路",
+            ]
+        }, {
+            title: "2025/06/15",
+            records: [
+                "““更新””:更新APP版本号至最新",
+                "““修复””:修复无法观看问题",
+                '““以后随缘修，不会更的这么勤，主要是没啥动力，更这个不如自己玩””'
             ]
         }, {
             title: "2025/06/14",
@@ -869,10 +872,6 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-                    putMyVar('host', appurl + '/')
-                }
                 d.push({
                     title: getMyVar('rank', '0') == '0' ? strong('全部', 'FF6699') : '全部',
                     url: $('#noLoading#').lazyRule(() => {
@@ -931,10 +930,6 @@ const csdown = {
         var pg = getParam('page');
         try {
             if (MY_PAGE == 1) {
-                if (!getMyVar('host', '')) {
-                    let appurl = fetch('https://cdn-tupic-duofun-neimenggu.56uxi.com/1.txt');
-                    putMyVar('host', appurl + '/')
-                }
                 let week = [{
                     title: '周一&周二&周三&周四&周五&周六&周日',
                     id: '1&2&3&4&5&6&7'
