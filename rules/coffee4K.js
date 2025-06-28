@@ -1,7 +1,7 @@
 const csdown = {
     d: [],
     author: '流苏',
-    version: '20250625',
+    version: '20250628',
     rely: (data) => {
         return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, '$1')
     },
@@ -397,6 +397,11 @@ const csdown = {
                 "““声明””:不要相信里面的广告，不要去加里面的群",
             ]
         }, {
+            title: "2025/06/28",
+            records: [
+                "““修复””：修复一个bug",
+            ]
+        }, {
             title: "2025/06/25",
             records: [
                 "““更新””：更换二级页面线路切换方式，改为刷新元素，而非刷新页面(其实没什么区别)",
@@ -643,12 +648,7 @@ const csdown = {
                                             'url': Encrypt(url),
                                             'token': token,
                                         };
-                                        let data;
-                                        if (!getMyVar('init')) {
-                                            data = post('api.php/getappapi.index/vodParse', body).json;
-                                        } else {
-                                            data = post('api.php/qijiappapi.index/vodParse', body).json;
-                                        }
+                                        let data = post('api.php/qijiappapi.index/vodParse', body).json;
                                         let m3u8 = JSON.parse(data).url;
                                         if (m3u8.includes('nby') && m3u8.includes('mp4')) {
                                             let nby = JSON.parse(fetch(m3u8, {
@@ -739,12 +739,7 @@ const csdown = {
                                                 'url': Encrypt(url),
                                                 'token': token,
                                             };
-                                            let data;
-                                            if (!getMyVar('init')) {
-                                                data = post('api.php/getappapi.index/vodParse', body).json;
-                                            } else {
-                                                data = post('api.php/qijiappapi.index/vodParse', body).json;
-                                            }
+                                            let data = post('api.php/qijiappapi.index/vodParse', body).json;
                                             let m3u8 = JSON.parse(data).url;
                                             if (m3u8.includes('nby') && m3u8.includes('mp4')) {
                                                 let nby = JSON.parse(fetch(m3u8, {
@@ -819,12 +814,7 @@ const csdown = {
                                 'url': Encrypt(url),
                                 'token': token,
                             };
-                            let data;
-                            if (!getMyVar('init')) {
-                                data = post('api.php/getappapi.index/vodParse', body).json;
-                            } else {
-                                data = post('api.php/qijiappapi.index/vodParse', body).json;
-                            }
+                            let data = post('api.php/qijiappapi.index/vodParse', body).json;
                             let m3u8 = JSON.parse(data).url;
                             if (m3u8.includes('nby') && m3u8.includes('mp4')) {
                                 let nby = JSON.parse(fetch(m3u8, {
