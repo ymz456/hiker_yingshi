@@ -1204,7 +1204,7 @@ const csdown = {
                     desc: '类型：' + data.vod_class + '\n' + ('‘‘’’更新状态：' + data.vod_remarks),
                     img: data.vod_pic,
                     url: $('hiker://empty?#immersiveTheme#').rule(() => {
-                        $.require('videoerji')
+                        $.require('csdown').videoerji()
                     }),
                     col_type: 'movie_1_vertical_pic',
                     extra: {
