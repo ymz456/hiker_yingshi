@@ -1644,12 +1644,12 @@ const csdown = {
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/10/丫丫动漫.png',
             de_key: 'qkxnwkfjwpcnwycl',
             host: 'http://tv.yy-fun.cc/',
-        }, {
+        }, /*{
             title: '落攻阁影视',
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/10/落攻阁影视.png',
             de_key: 'asgcxhjkts124573',
             host: 'http://111.180.198.40:1110/',
-        }, {
+        }, */{
             title: '黑猫动漫',
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/10/黑猫动漫.png',
             de_key: '0fe3b5781782c621',
@@ -1674,13 +1674,13 @@ const csdown = {
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/13/1000184820.png',
             de_key: 'qE2nD0rL1lH4uP9r',
             host: 'http://www.drdm.fun/',
-        }, {
+        }, /*{
             title: '掌上追剧',
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/13/1000184818.png',
             de_key: 'jcTz6Jda2aKrH8Tk',
             host: 'http://tvb.yy-fun.cc/',
             rank: 1,
-        }, {
+        }, */{
             title: '魔方影视',
             img: 'https://seyouapp777.dqntwl.com/i/2025/06/15/1000066562.png',
             de_key: '1234567887654321',
